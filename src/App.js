@@ -37,7 +37,19 @@ function App() {
     },
   ]);
   const [search, setSearch] = useState("");
-  const [searchResults, setSearchResult] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState("");
+  const [postBody, setPostBody] = useState("");
+
+  const history = useHistory(); // -> pushes back to homepage after a specified request
+
+  const handleSubmit = async () => {};
+
+  const handleDelete = async (id) => {
+    const postsList = posts.filter((post) => post.id !== id);
+    setPosts(postsList);
+    history.push("/");
+  };
 
   return (
     <div className="App">
@@ -48,11 +60,17 @@ function App() {
           <Home posts={posts} />
         </Route>
         <Route exact path="/post">
-          <NewPost />
+          <NewPost
+            handleSubmit={handleSubmit}
+            postTitle={postTitle}
+            setPostTitle={setPostTitle}
+            postBody={postBody}
+            setPostBody={setPostBody}
+          />
         </Route>
 
         <Route path="/post/:id">
-          <PostPage />
+          <PostPage posts={posts} handleDelete={handleDelete} />
         </Route>
 
         <Route path="/about" component={About}></Route>

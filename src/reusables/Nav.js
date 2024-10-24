@@ -6,7 +6,7 @@ const Nav = (props) => {
   return (
     <nav className="Nav">
       <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
-        <labale htmlFor="search">Search Posts</labale>
+        <label htmlFor="search">Search Posts</label>
         <input
           id="search"
           type="text"
