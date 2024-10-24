@@ -13,8 +13,8 @@ import { Switch, Route } from "react-router-dom";
 function App() {
   return (
     <div className="App">
+      <Header title="React JS Blog" />
       <DataProvider>
-        <Header title="React JS Blog" />
         <Nav />
         <Switch>
           <Route exact path="/" component={Home} />
@@ -28,8 +28,8 @@ function App() {
 
           <Route path="*" component={Missing}></Route>
         </Switch>
-        <Footer />
       </DataProvider>
+      <Footer />
     </div>
   );
 }
