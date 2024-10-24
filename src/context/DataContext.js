@@ -1,9 +1,6 @@
 import { createContext } from "react";
-import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useAxiosFetch from "../hooks/useAxios";
-import { format } from "date-fns";
-import api from "../api/posts";
 
 const DataContext = createContext({});
 
@@ -15,8 +12,6 @@ export const DataProvider = ({ children }) => {
   const { data, fetchError, isLoading } = useAxiosFetch(
     "http://localhost:3500/posts"
   );
-
-  const history = useHistory(); // -> pushes back to homepage after a specified request
 
   useEffect(() => {
     setPosts(data);
@@ -50,3 +45,5 @@ export const DataProvider = ({ children }) => {
 };
 
 export default DataContext;
+
+//   const history = useHistory(); // -> pushes back to homepage after a specified request
