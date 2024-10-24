@@ -11,10 +11,13 @@ import Footer from "./reusables/Footer";
 function App() {
   return (
     <div className="App">
-      <Header />
+      <Header title="React JS Blog" />
       <Nav />
       <Switch>
-        <Route path="/post">
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route exact path="/post">
           <NewPost />
         </Route>
 
@@ -28,10 +31,6 @@ function App() {
 
         <Route path="*">
           <Missing />
-        </Route>
-
-        <Route path="/">
-          <Home />
         </Route>
       </Switch>
       <Footer />
