@@ -7,7 +7,8 @@ import PostPage from "./components/PostPage";
 import About from "./components/About";
 import Missing from "./components/Missing";
 import Footer from "./reusables/Footer";
-import { useState } from "react";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -19,19 +20,19 @@ function App() {
     },
     {
       id: 2,
-      title: "My first Post",
+      title: "My 2nd Post",
       datetime: "June 04, 2024 11:20:35 AM",
       body: "Lorem Ipsum dolor sit amet consectetur adispicing elit.",
     },
     {
       id: 3,
-      title: "My first Post",
+      title: "My 3rd Post",
       datetime: "June 20, 2024 11:20:35 AM",
       body: "Lorem Ipsum dolor sit amet consectetur adispicing elit.",
     },
     {
       id: 4,
-      title: "My first Post",
+      title: "My fourth Post",
       datetime: "June 30, 2024 11:20:35 AM",
       body: "Lorem Ipsum dolor sit amet consectetur adispicing elit.",
     },
@@ -43,7 +44,29 @@ function App() {
 
   const history = useHistory(); // -> pushes back to homepage after a specified request
 
-  const handleSubmit = async () => {};
+  useEffect(() => {
+    const filteredResults = posts.filter(
+      (post) =>
+        post.body.toLowerCase().includes(search.toLowerCase()) ||
+        post.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setSearchResults(filteredResults.reverse());
+  }, [posts, search]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), "MMMM dd, yyyy pp");
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+
+    const allPosts = [...posts, newPost];
+    setPosts(allPosts);
+    setPostTitle("");
+    setPostBody("");
+    history.push("/");
+  };
 
   const handleDelete = async (id) => {
     const postsList = posts.filter((post) => post.id !== id);
@@ -57,7 +80,7 @@ function App() {
       <Nav search={search} setSearch={setSearch} />
       <Switch>
         <Route exact path="/">
-          <Home posts={posts} />
+          <Home posts={searchResults} />
         </Route>
         <Route exact path="/post">
           <NewPost
