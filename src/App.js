@@ -11,6 +11,8 @@ import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import api from "./api/posts";
 import EditPost from "./components/EditPost";
+import useWindowsize from "./hooks/useWindowSize";
+import useAxiosFetch from "./hooks/useAxios";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -20,30 +22,16 @@ function App() {
   const [postBody, setPostBody] = useState("");
   const [editTitle, setEditTitle] = useState("");
   const [editBody, setEditBody] = useState("");
+  const { width } = useWindowsize();
+  const { data, fetchError, isLoading } = useAxiosFetch(
+    "http://localhost:3500/posts"
+  );
 
   const history = useHistory(); // -> pushes back to homepage after a specified request
 
   useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        // fetching the data
-        const response = await api.get("/posts");
-        // axios will create json format
-        // and axios will catch errors automatically
-        setPosts(response.data);
-      } catch (err) {
-        if (err.response) {
-          // Not in the 200 response range
-          console.log(err.response.data);
-          console.log(err.response.status);
-          console.log(err.response.headers);
-        } else {
-          console.log(`Error: ${err.message}`);
-        }
-      }
-    };
-    fetchPost();
-  }, []);
+    setPosts(data);
+  }, [data]);
 
   useEffect(() => {
     const filteredResults = posts.filter(
@@ -104,11 +92,15 @@ function App() {
 
   return (
     <div className="App">
-      <Header title="React JS Blog" />
+      <Header title="React JS Blog" width={width} />
       <Nav search={search} setSearch={setSearch} />
       <Switch>
         <Route exact path="/">
-          <Home posts={searchResults} />
+          <Home
+            fetchError={fetchError}
+            isLoading={isLoading}
+            posts={searchResults}
+          />
         </Route>
         <Route exact path="/post">
           <NewPost
