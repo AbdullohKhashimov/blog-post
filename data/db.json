@@ -23,6 +23,12 @@
       "title": "My fourth Post",
       "datetime": "June 30, 2024 11:20:35 AM",
       "body": "Lorem Ipsum dolor sit amet consectetur adispicing elit."
+    },
+    {
+      "id": 5,
+      "title": "Test",
+      "datetime": "October 24, 2024 10:49:30 AM",
+      "body": "A new post just to test if post method is working or not"
     }
   ]
 }

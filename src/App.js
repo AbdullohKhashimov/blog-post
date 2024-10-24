@@ -9,6 +9,7 @@ import Missing from "./components/Missing";
 import Footer from "./reusables/Footer";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
+import api from "./api/posts";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -18,6 +19,28 @@ function App() {
   const [postBody, setPostBody] = useState("");
 
   const history = useHistory(); // -> pushes back to homepage after a specified request
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        // fetching the data
+        const response = await api.get("/posts");
+        // axios will create json format
+        // and axios will catch errors automatically
+        setPosts(response.data);
+      } catch (err) {
+        if (err.response) {
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else {
+          console.log(`Error: ${err.message}`);
+        }
+      }
+    };
+    fetchPost();
+  }, []);
 
   useEffect(() => {
     const filteredResults = posts.filter(
@@ -36,11 +59,16 @@ function App() {
     const datetime = format(new Date(), "MMMM dd, yyyy pp");
     const newPost = { id, title: postTitle, datetime, body: postBody };
 
-    const allPosts = [...posts, newPost];
-    setPosts(allPosts);
-    setPostTitle("");
-    setPostBody("");
-    history.push("/");
+    try {
+      const response = await api.post("/posts", newPost);
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);
+      setPostTitle("");
+      setPostBody("");
+      history.push("/");
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
   };
 
   const handleDelete = async (id) => {
