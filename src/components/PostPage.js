@@ -13,7 +13,11 @@ const PostPage = (props) => {
             <h2>{post.title}</h2>
             <p className="postDate">{post.datetime}</p>
             <p className="postBody">{post.body}</p>
+            <Link to={`/edit/${post.id}`}>
+              <button className="editButton">Edit Post</button>
+            </Link>
             <button
+              className="deleteButton"
               style={{ backgroundColor: "red" }}
               onClick={() => handleDelete(post.id)}
             >

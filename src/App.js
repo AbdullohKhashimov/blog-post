@@ -10,6 +10,7 @@ import Footer from "./reusables/Footer";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import api from "./api/posts";
+import EditPost from "./components/EditPost";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -17,6 +18,8 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [postTitle, setPostTitle] = useState("");
   const [postBody, setPostBody] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
 
   const history = useHistory(); // -> pushes back to homepage after a specified request
 
@@ -71,10 +74,32 @@ function App() {
     }
   };
 
+  const handleEdit = async (id) => {
+    const datetime = format(new Date(), "MMMM dd, yyyy pp");
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+
+    try {
+      const response = await api.put(`/posts/${id}`, updatedPost);
+      setPosts(
+        posts.map((post) => (post.id === id ? { ...response.data } : post))
+      );
+      setEditTitle("");
+      setEditBody("");
+      history.push("/");
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
+
   const handleDelete = async (id) => {
-    const postsList = posts.filter((post) => post.id !== id);
-    setPosts(postsList);
-    history.push("/");
+    try {
+      await api.delete(`/posts/${id}`);
+      const postsList = posts.filter((post) => post.id !== id);
+      setPosts(postsList);
+      history.push("/");
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
   };
 
   return (
@@ -92,6 +117,17 @@ function App() {
             setPostTitle={setPostTitle}
             postBody={postBody}
             setPostBody={setPostBody}
+          />
+        </Route>
+
+        <Route exact path="/edit/:id">
+          <EditPost
+            posts={posts}
+            handleEdit={handleEdit}
+            editTitle={editTitle}
+            setEditTitle={setEditTitle}
+            editBody={editBody}
+            setEditBody={setEditBody}
           />
         </Route>
 
